@@ -636,7 +636,7 @@
                 "show_tax_info": false,
                 "type_preset": "custom",
                 "width": "100%",
-                "alignment": "left",
+                "alignment": "center",
                 "font": "var(--font-body--family)",
                 "font_size": "1.125rem",
                 "line_height": "loose",
@@ -652,6 +652,7 @@
             },
             "swatches_B6hHmc": {
               "type": "swatches",
+              "disabled": true,
               "settings": {
                 "product_swatches_alignment": "center",
                 "product_swatches_alignment_mobile": "flex-start",
