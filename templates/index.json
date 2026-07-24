@@ -607,7 +607,7 @@
               "type": "text",
               "settings": {
                 "text": "<h4><strong>{{ closest.product.title }}</strong></h4>",
-                "width": "100%",
+                "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "custom",
