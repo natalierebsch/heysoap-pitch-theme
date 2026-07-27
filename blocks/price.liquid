@@ -4,6 +4,13 @@
   assign block_settings = block.settings
   assign product_resource = closest.product
   assign selected_variant = product_resource.selected_or_first_available_variant
+  assign show_discount_badge = false
+  assign discount_percentage = 0
+  if selected_variant.compare_at_price > selected_variant.price and selected_variant.compare_at_price > 0
+    assign show_discount_badge = true
+    assign discount_amount = selected_variant.compare_at_price | minus: selected_variant.price
+    assign discount_percentage = discount_amount | times: 100.0 | divided_by: selected_variant.compare_at_price | round
+  endif
 -%}
 
 {% liquid
@@ -37,7 +44,7 @@
 %}
 
 <product-price
-  class="text-block {{ text_block_classes }} text-{{ block_settings.alignment }} {{ block_settings.type_preset | default: 'paragraph' }} spacing-style"
+  class="price-block--{{ block.id }} price-block--compare-{{ block_settings.compare_price_position }} text-block {{ text_block_classes }} text-{{ block_settings.alignment }} {{ block_settings.type_preset | default: 'paragraph' }} spacing-style"
   data-block-id="{{ block.id }}"
   data-product-id="{{ product_resource.id }}"
   style="
@@ -48,14 +55,44 @@
       --color-rgb: {{ block_settings.text_color.rgb }};
     {% endif %}
     --width: {{ block_settings.width }};
+    --price-sale-color: {{ block_settings.sale_price_color | default: 'currentColor' }};
+    --price-compare-color: {{ block_settings.compare_price_color | default: 'currentColor' }};
+    --price-badge-background: {{ block_settings.badge_background_color }};
+    --price-badge-color: {{ block_settings.badge_text_color }};
+    --price-badge-radius: {{ block_settings.badge_border_radius }}px;
+    --price-row-gap: {{ block_settings.price_gap }}px;
+    --current-price-font: {{ block_settings.current_price_font }};
+    --current-price-size: {{ block_settings.current_price_size }}px;
+    --current-price-weight: {{ block_settings.current_price_weight }};
+    --compare-price-font: {{ block_settings.compare_price_font }};
+    --compare-price-size: {{ block_settings.compare_price_size }}px;
+    --compare-price-weight: {{ block_settings.compare_price_weight }};
+    --unit-price-font: {{ block_settings.unit_price_font }};
+    --unit-price-size: {{ block_settings.unit_price_size }}px;
+    --unit-price-weight: {{ block_settings.unit_price_weight }};
   "
   {{ block.shopify_attributes }}
 >
-  {% render 'price',
-    show_unit_price: true,
-    product_resource: product_resource,
-    show_sale_price_first: block_settings.show_sale_price_first
-  %}
+  <div class="price-block__row">
+    {% render 'price',
+      show_unit_price: block_settings.show_unit_price,
+      product_resource: product_resource,
+      show_sale_price_first: block_settings.show_sale_price_first
+    %}
+
+    {% if block_settings.show_discount_badge and show_discount_badge %}
+      <span class="price-block__discount-badge">
+        {% case block_settings.discount_badge_content %}
+          {% when 'sale' %}
+            Sale
+          {% when 'custom' %}
+            {{ block_settings.discount_badge_text | escape }}
+          {% else %}
+            -{{ discount_percentage }}%
+        {% endcase %}
+      </span>
+    {% endif %}
+  </div>
 
   {% if block_settings.show_tax_info %}
     <div class="tax-note">
@@ -90,6 +127,100 @@
 
 {% render 'payment-terms-styles' %}
 
+{% stylesheet %}
+  .price-block__row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--price-row-gap);
+  }
+
+  product-price.text-center .price-block__row {
+    justify-content: center;
+  }
+
+  product-price.text-right .price-block__row {
+    justify-content: flex-end;
+  }
+
+  .price-block__row [ref='priceContainer'] {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--price-row-gap);
+  }
+
+  .price-block__row .price {
+    color: var(--price-sale-color);
+    font-family: var(--current-price-font);
+    font-size: var(--current-price-size);
+    font-weight: var(--current-price-weight);
+  }
+
+  .price-block__row .compare-at-price {
+    color: var(--price-compare-color);
+    opacity: 0.7;
+    font-family: var(--compare-price-font);
+    font-size: var(--compare-price-size);
+    font-weight: var(--compare-price-weight);
+  }
+
+  .price-block__row .unit-price {
+    width: 100%;
+    order: 2;
+    font-family: var(--unit-price-font);
+    font-size: var(--unit-price-size);
+    font-weight: var(--unit-price-weight);
+  }
+
+  .price-block--compare-left .compare-at-price {
+    order: -1;
+  }
+
+  .price-block--compare-right .compare-at-price {
+    order: 1;
+  }
+
+  :is(.price-block--compare-top, .price-block--compare-bottom) .price-block__row [ref='priceContainer'] {
+    flex-direction: column;
+    gap: var(--price-row-gap);
+  }
+
+  .price-block--compare-top .compare-at-price {
+    order: -1;
+  }
+
+  .price-block--compare-bottom .compare-at-price {
+    order: 1;
+  }
+
+  :is(.price-block--compare-top, .price-block--compare-bottom).text-center
+    .price-block__row
+    [ref='priceContainer'] {
+    align-items: center;
+  }
+
+  :is(.price-block--compare-top, .price-block--compare-bottom).text-right
+    .price-block__row
+    [ref='priceContainer'] {
+    align-items: flex-end;
+  }
+
+  .price-block__discount-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25em 0.55em;
+    border-radius: var(--price-badge-radius);
+    background: var(--price-badge-background);
+    color: var(--price-badge-color);
+    font-size: 0.7em;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+  }
+{% endstylesheet %}
+
 {% schema %}
 {
   "name": "t:names.product_price",
@@ -120,6 +251,109 @@
       "id": "show_tax_info",
       "label": "t:settings.show_tax_info",
       "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_unit_price",
+      "label": "Grundpreis anzeigen",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Rabatt-Badge"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount_badge",
+      "label": "Rabatt-Badge anzeigen",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "discount_badge_content",
+      "label": "Inhalt",
+      "options": [
+        {
+          "value": "percentage",
+          "label": "Prozentuale Ersparnis"
+        },
+        {
+          "value": "sale",
+          "label": "Sale"
+        },
+        {
+          "value": "custom",
+          "label": "Eigener Text"
+        }
+      ],
+      "default": "percentage",
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "text",
+      "id": "discount_badge_text",
+      "label": "Badge-Text",
+      "default": "Angebot",
+      "visible_if": "{{ block.settings.show_discount_badge and block.settings.discount_badge_content == 'custom' }}"
+    },
+    {
+      "type": "color",
+      "id": "badge_background_color",
+      "label": "Badge-Hintergrund",
+      "default": "#e9ff70",
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge-Textfarbe",
+      "default": "#111111",
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "range",
+      "id": "badge_border_radius",
+      "label": "Badge-Rundung",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 4,
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "range",
+      "id": "price_gap",
+      "label": "Abstand zwischen Preisen und Badge",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "select",
+      "id": "compare_price_position",
+      "label": "Position des Vergleichspreises",
+      "options": [
+        {
+          "value": "left",
+          "label": "Links vom Preis"
+        },
+        {
+          "value": "right",
+          "label": "Rechts vom Preis"
+        },
+        {
+          "value": "top",
+          "label": "Über dem Preis"
+        },
+        {
+          "value": "bottom",
+          "label": "Unter dem Preis"
+        }
+      ],
+      "default": "right"
     },
     {
       "type": "header",
@@ -362,6 +596,168 @@
       "id": "text_color",
       "label": "t:settings.text_color",
       "placeholder": "t:settings.default"
+    },
+    {
+      "type": "color",
+      "id": "sale_price_color",
+      "label": "Aktueller Preis",
+      "placeholder": "Standard"
+    },
+    {
+      "type": "color",
+      "id": "compare_price_color",
+      "label": "Gestrichener Vergleichspreis",
+      "placeholder": "Standard"
+    },
+    {
+      "type": "header",
+      "content": "Aktueller Preis"
+    },
+    {
+      "type": "select",
+      "id": "current_price_font",
+      "label": "Schriftart",
+      "options": [
+        {
+          "value": "var(--font-body--family)",
+          "label": "Fließtext"
+        },
+        {
+          "value": "var(--font-subheading--family)",
+          "label": "Unterüberschrift"
+        },
+        {
+          "value": "var(--font-heading--family)",
+          "label": "Überschrift"
+        },
+        {
+          "value": "var(--font-accent--family)",
+          "label": "Akzent"
+        }
+      ],
+      "default": "var(--font-body--family)"
+    },
+    {
+      "type": "range",
+      "id": "current_price_size",
+      "label": "Schriftgröße",
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "current_price_weight",
+      "label": "Schriftstärke",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Halbfett" },
+        { "value": "700", "label": "Fett" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "header",
+      "content": "Vergleichspreis"
+    },
+    {
+      "type": "select",
+      "id": "compare_price_font",
+      "label": "Schriftart",
+      "options": [
+        {
+          "value": "var(--font-body--family)",
+          "label": "Fließtext"
+        },
+        {
+          "value": "var(--font-subheading--family)",
+          "label": "Unterüberschrift"
+        },
+        {
+          "value": "var(--font-heading--family)",
+          "label": "Überschrift"
+        },
+        {
+          "value": "var(--font-accent--family)",
+          "label": "Akzent"
+        }
+      ],
+      "default": "var(--font-body--family)"
+    },
+    {
+      "type": "range",
+      "id": "compare_price_size",
+      "label": "Schriftgröße",
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "compare_price_weight",
+      "label": "Schriftstärke",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Halbfett" },
+        { "value": "700", "label": "Fett" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Grundpreis"
+    },
+    {
+      "type": "select",
+      "id": "unit_price_font",
+      "label": "Schriftart",
+      "options": [
+        {
+          "value": "var(--font-body--family)",
+          "label": "Fließtext"
+        },
+        {
+          "value": "var(--font-subheading--family)",
+          "label": "Unterüberschrift"
+        },
+        {
+          "value": "var(--font-heading--family)",
+          "label": "Überschrift"
+        },
+        {
+          "value": "var(--font-accent--family)",
+          "label": "Akzent"
+        }
+      ],
+      "default": "var(--font-body--family)"
+    },
+    {
+      "type": "range",
+      "id": "unit_price_size",
+      "label": "Schriftgröße",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "unit_price_weight",
+      "label": "Schriftstärke",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Halbfett" },
+        { "value": "700", "label": "Fett" }
+      ],
+      "default": "400"
     },
     {
       "type": "header",

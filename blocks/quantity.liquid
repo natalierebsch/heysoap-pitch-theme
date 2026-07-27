@@ -13,13 +13,101 @@
   {% endstyle %}
 {%- endif -%}
 
-{% render 'quantity-selector', product: closest.product, block: block, wrapper_class: wrapper_class %}
+<div
+  class="quantity-block quantity-block--{{ block.id }} size-style"
+  style="{% render 'size-style', settings: block.settings %}"
+>
+  {% render 'quantity-selector', product: closest.product, block: block, wrapper_class: wrapper_class %}
+</div>
+
+{% stylesheet %}
+  .quantity-block {
+    max-width: 100%;
+  }
+
+  .quantity-block .quantity-selector-wrapper,
+  .quantity-block .quantity-selector {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .quantity-block .quantity-selector {
+    --quantity-selector-width: 100%;
+    flex-basis: 100%;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
   "name": "t:names.quantity",
   "tag": null,
   "settings": [
+    {
+      "type": "header",
+      "content": "Breite"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Breite am Desktop",
+      "options": [
+        {
+          "value": "fit-content",
+          "label": "An Inhalt anpassen"
+        },
+        {
+          "value": "fill",
+          "label": "Ausfüllen"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
+        }
+      ],
+      "default": "fit-content"
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "Benutzerdefinierte Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "width_mobile",
+      "label": "Breite mobil",
+      "options": [
+        {
+          "value": "fit-content",
+          "label": "An Inhalt anpassen"
+        },
+        {
+          "value": "fill",
+          "label": "Ausfüllen"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
+        }
+      ],
+      "default": "fit-content"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Benutzerdefinierte Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.width_mobile == 'custom' }}"
+    },
     {
       "type": "header",
       "content": "t:content.input"
