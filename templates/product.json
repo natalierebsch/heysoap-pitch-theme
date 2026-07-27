@@ -327,6 +327,84 @@
                 "padding-inline-end": 0
               },
               "blocks": {
+                "product_column_group_ypQbha": {
+                  "type": "product-column-group",
+                  "name": "Preis und Menge",
+                  "settings": {
+                    "columns": 2,
+                    "columns_mobile": "2",
+                    "gap": 12,
+                    "vertical_alignment": "center",
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {
+                    "price_K3az4y": {
+                      "type": "price",
+                      "settings": {
+                        "show_sale_price_first": true,
+                        "show_installments": false,
+                        "show_tax_info": true,
+                        "show_unit_price": true,
+                        "show_discount_badge": true,
+                        "discount_badge_content": "percentage",
+                        "discount_badge_text": "Angebot",
+                        "badge_background_color": "{{ settings.color_palette.color2 }}",
+                        "badge_text_color": "{{ settings.color_palette.color6 }}",
+                        "badge_border_radius": 6,
+                        "price_gap": 5,
+                        "compare_price_position": "top",
+                        "type_preset": "custom",
+                        "width": "100%",
+                        "alignment": "left",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1.25rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "text_color": "{{ settings.color_palette.color6 }}",
+                        "sale_price_color": "{{ settings.color_palette.foreground }}",
+                        "compare_price_color": "",
+                        "current_price_font": "var(--font-body--family)",
+                        "current_price_size": 20,
+                        "current_price_weight": "600",
+                        "compare_price_font": "var(--font-body--family)",
+                        "compare_price_size": 14,
+                        "compare_price_weight": "400",
+                        "unit_price_font": "var(--font-body--family)",
+                        "unit_price_size": 12,
+                        "unit_price_weight": "400",
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    },
+                    "quantity_Cp4nMg": {
+                      "type": "quantity",
+                      "settings": {
+                        "width": "custom",
+                        "custom_width": 40,
+                        "width_mobile": "fill",
+                        "custom_width_mobile": 100,
+                        "input_style": "custom",
+                        "input_background_color": "{{ settings.color_palette.color1 }}",
+                        "input_text_color": "{{ settings.color_palette.color6 }}",
+                        "input_border_color": "{{ settings.color_palette.color6 }}",
+                        "border_width": 2,
+                        "border_radius": 20
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "price_K3az4y",
+                    "quantity_Cp4nMg"
+                  ]
+                },
                 "divider_Tf3piE": {
                   "type": "_divider",
                   "name": "t:names.divider",
@@ -388,28 +466,6 @@
                   },
                   "blocks": {}
                 },
-                "price_yCgn8f": {
-                  "type": "price",
-                  "settings": {
-                    "show_sale_price_first": true,
-                    "show_installments": true,
-                    "show_tax_info": true,
-                    "type_preset": "h6",
-                    "width": "100%",
-                    "alignment": "left",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "text_color": "",
-                    "padding-block-start": 4,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                },
                 "buy_buttons_6p8c63": {
                   "type": "buy-buttons",
                   "settings": {
@@ -441,6 +497,10 @@
                       "type": "quantity",
                       "static": true,
                       "settings": {
+                        "width": "fit-content",
+                        "custom_width": 100,
+                        "width_mobile": "fit-content",
+                        "custom_width_mobile": 100,
                         "input_style": "custom",
                         "input_background_color": "{{ settings.color_palette.background }}",
                         "input_text_color": "{{ settings.color_palette.foreground }}",
@@ -473,10 +533,10 @@
                 }
               },
               "block_order": [
+                "product_column_group_ypQbha",
                 "divider_Tf3piE",
                 "text_pQLwYM",
                 "variant_picker_KePPVa",
-                "price_yCgn8f",
                 "buy_buttons_6p8c63"
               ]
             },
@@ -976,6 +1036,15 @@
                     "show_sale_price_first": true,
                     "show_installments": false,
                     "show_tax_info": false,
+                    "show_unit_price": true,
+                    "show_discount_badge": true,
+                    "discount_badge_content": "percentage",
+                    "discount_badge_text": "Angebot",
+                    "badge_background_color": "#e9ff70",
+                    "badge_text_color": "#111111",
+                    "badge_border_radius": 4,
+                    "price_gap": 6,
+                    "compare_price_position": "right",
                     "type_preset": "paragraph",
                     "width": "100%",
                     "alignment": "left",
@@ -985,6 +1054,17 @@
                     "letter_spacing": "normal",
                     "case": "none",
                     "text_color": "",
+                    "sale_price_color": "",
+                    "compare_price_color": "",
+                    "current_price_font": "var(--font-body--family)",
+                    "current_price_size": 24,
+                    "current_price_weight": "600",
+                    "compare_price_font": "var(--font-body--family)",
+                    "compare_price_size": 16,
+                    "compare_price_weight": "400",
+                    "unit_price_font": "var(--font-body--family)",
+                    "unit_price_size": 12,
+                    "unit_price_weight": "400",
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,

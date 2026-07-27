@@ -41,6 +41,23 @@
       echo ' rte'
     endif
   endcapture
+
+  capture discount_badge
+    if block_settings.show_discount_badge and show_discount_badge
+      echo '<span class="price-block__discount-badge">'
+      case block_settings.discount_badge_content
+        when 'sale'
+          echo 'Sale'
+        when 'custom'
+          echo block_settings.discount_badge_text | escape
+        else
+          echo '-'
+          echo discount_percentage
+          echo '%'
+      endcase
+      echo '</span>'
+    endif
+  endcapture
 %}
 
 <product-price
@@ -60,6 +77,13 @@
     --price-badge-background: {{ block_settings.badge_background_color }};
     --price-badge-color: {{ block_settings.badge_text_color }};
     --price-badge-radius: {{ block_settings.badge_border_radius }}px;
+    --price-badge-alignment: {{ block_settings.badge_vertical_alignment }};
+    --price-badge-font: {{ block_settings.badge_font }};
+    --price-badge-font-size: {{ block_settings.badge_font_size }}px;
+    --price-badge-font-weight: {{ block_settings.badge_font_weight }};
+    --price-badge-line-height: {{ block_settings.badge_line_height }};
+    --price-badge-letter-spacing: {{ block_settings.badge_letter_spacing }}em;
+    --price-badge-text-transform: {{ block.settings.badge_text_transform }};
     --price-row-gap: {{ block_settings.price_gap }}px;
     --current-price-font: {{ block_settings.current_price_font }};
     --current-price-size: {{ block_settings.current_price_size }}px;
@@ -77,21 +101,9 @@
     {% render 'price',
       show_unit_price: block_settings.show_unit_price,
       product_resource: product_resource,
-      show_sale_price_first: block_settings.show_sale_price_first
+      show_sale_price_first: block_settings.show_sale_price_first,
+      badge: discount_badge
     %}
-
-    {% if block_settings.show_discount_badge and show_discount_badge %}
-      <span class="price-block__discount-badge">
-        {% case block_settings.discount_badge_content %}
-          {% when 'sale' %}
-            Sale
-          {% when 'custom' %}
-            {{ block_settings.discount_badge_text | escape }}
-          {% else %}
-            -{{ discount_percentage }}%
-        {% endcase %}
-      </span>
-    {% endif %}
   </div>
 
   {% if block_settings.show_tax_info %}
@@ -157,6 +169,12 @@
     font-weight: var(--current-price-weight);
   }
 
+  .price-block__row .price-current-group {
+    display: inline-flex;
+    align-items: var(--price-badge-alignment);
+    gap: var(--price-row-gap);
+  }
+
   .price-block__row .compare-at-price {
     color: var(--price-compare-color);
     opacity: 0.7;
@@ -214,9 +232,12 @@
     border-radius: var(--price-badge-radius);
     background: var(--price-badge-background);
     color: var(--price-badge-color);
-    font-size: 0.7em;
-    font-weight: 700;
-    line-height: 1;
+    font-family: var(--price-badge-font);
+    font-size: var(--price-badge-font-size);
+    font-weight: var(--price-badge-font-weight);
+    line-height: var(--price-badge-line-height);
+    letter-spacing: var(--price-badge-letter-spacing);
+    text-transform: var(--price-badge-text-transform);
     white-space: nowrap;
   }
 {% endstylesheet %}
@@ -319,6 +340,152 @@
       "step": 1,
       "unit": "px",
       "default": 4,
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "select",
+      "id": "badge_vertical_alignment",
+      "label": "Badge am Preis ausrichten",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Oben"
+        },
+        {
+          "value": "center",
+          "label": "Mittig"
+        },
+        {
+          "value": "flex-end",
+          "label": "Unten"
+        }
+      ],
+      "default": "center",
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "header",
+      "content": "Badge-Typografie",
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "select",
+      "id": "badge_font",
+      "label": "Schriftart",
+      "options": [
+        {
+          "value": "var(--font-body--family)",
+          "label": "Fließtext"
+        },
+        {
+          "value": "var(--font-subheading--family)",
+          "label": "Unterüberschrift"
+        },
+        {
+          "value": "var(--font-heading--family)",
+          "label": "Überschrift"
+        },
+        {
+          "value": "var(--font-accent--family)",
+          "label": "Akzent"
+        }
+      ],
+      "default": "var(--font-body--family)",
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "range",
+      "id": "badge_font_size",
+      "label": "Schriftgröße",
+      "min": 8,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 12,
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "select",
+      "id": "badge_font_weight",
+      "label": "Schriftstärke",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Halbfett"
+        },
+        {
+          "value": "700",
+          "label": "Fett"
+        }
+      ],
+      "default": "700",
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "select",
+      "id": "badge_line_height",
+      "label": "Zeilenhöhe",
+      "options": [
+        {
+          "value": "1",
+          "label": "Eng"
+        },
+        {
+          "value": "1.2",
+          "label": "Normal"
+        },
+        {
+          "value": "1.5",
+          "label": "Weit"
+        }
+      ],
+      "default": "1",
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "select",
+      "id": "badge_letter_spacing",
+      "label": "Buchstabenabstand",
+      "options": [
+        {
+          "value": "-0.02",
+          "label": "Eng"
+        },
+        {
+          "value": "0",
+          "label": "Normal"
+        },
+        {
+          "value": "0.05",
+          "label": "Weit"
+        }
+      ],
+      "default": "0",
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "select",
+      "id": "badge_text_transform",
+      "label": "Großschreibung",
+      "options": [
+        {
+          "value": "none",
+          "label": "Standard"
+        },
+        {
+          "value": "uppercase",
+          "label": "Großbuchstaben"
+        }
+      ],
+      "default": "none",
       "visible_if": "{{ block.settings.show_discount_badge }}"
     },
     {
