@@ -220,7 +220,7 @@
               "settings": {
                 "width": "100%",
                 "max_width": "normal",
-                "alignment": "right",
+                "alignment": "center",
                 "type_preset": "custom",
                 "font": "var(--font-heading--family)",
                 "font_size": "1.25rem",
