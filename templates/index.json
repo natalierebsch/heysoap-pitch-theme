@@ -504,7 +504,7 @@
         "media_height": "50svh",
         "section_width": "page-width",
         "extend_media": true,
-        "background_color": "{{ settings.color_palette.color1 }}",
+        "background_color": "{{ settings.color_palette.background }}",
         "padding-block-start": 0,
         "padding-block-end": 0
       }
