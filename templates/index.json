@@ -287,7 +287,7 @@
         "icons_shape": "circle",
         "section_width": "page-width",
         "gap": 12,
-        "background_color": "",
+        "background_color": "{{ settings.color_palette.color3 }}",
         "padding-block-start": 48,
         "padding-block-end": 48
       }
@@ -602,7 +602,7 @@
           "static": true,
           "settings": {
             "product_card_gap": 10,
-            "background_color": "{{ settings.color_palette.color3 }}",
+            "background_color": "#FFFFFF",
             "border": "none",
             "border_width": 1,
             "border_opacity": 100,
@@ -771,7 +771,7 @@
         "section_width": "page-width",
         "horizontal_alignment": "flex-start",
         "gap": 20,
-        "background_color": "{{ settings.color_palette.color4 }}",
+        "background_color": "{{ settings.color_palette.color1 }}",
         "padding-block-start": 48,
         "padding-block-end": 48
       }
@@ -784,7 +784,7 @@
           "static": true,
           "settings": {
             "media_type": "image",
-            "image": "shopify://shop_images/ChatGPT_Image_20._Juli_2026_11_21_44.png",
+            "image": "shopify://shop_images/foam_soap_starterset.png",
             "link": "",
             "video_loop": true,
             "video_autoplay": false,
@@ -806,7 +806,7 @@
               "type": "text",
               "name": "t:text_defaults.heading",
               "settings": {
-                "text": "<h2>Shop the look</h2>",
+                "text": "<h2>heysoap Startersets</h2>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "center",
@@ -831,10 +831,10 @@
             "text_VTg8YY": {
               "type": "text",
               "settings": {
-                "text": "<p>Unsere Seife ist gegen hartnäckige Gerüche</p>",
+                "text": "<p>Unser Starterset enthält alles was du für den Anfang brauchst;</p><ul><li>Lotion Spender</li><li>Soap Spender</li><li>Refil Pack</li><li>Refill Pack</li></ul><p></p>",
                 "width": "100%",
                 "max_width": "none",
-                "alignment": "center",
+                "alignment": "left",
                 "type_preset": "rte",
                 "font": "var(--font-body--family)",
                 "font_size": "",
@@ -850,6 +850,25 @@
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "button_nkmHdn": {
+              "type": "button",
+              "name": "t:names.button",
+              "settings": {
+                "label": "Startersets ansehen",
+                "link": "shopify://collections/sets",
+                "open_in_new_tab": false,
+                "style_class": "button",
+                "custom_button_background": "{{ settings.color_palette.foreground }}",
+                "custom_button_text": "{{ settings.color_palette.background }}",
+                "custom_button_border": "{{ settings.color_palette.background }}",
+                "link_text_color": "",
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
               },
               "blocks": {}
             },
@@ -978,6 +997,7 @@
           "block_order": [
             "text_NHUr8j",
             "text_VTg8YY",
+            "button_nkmHdn",
             "product_card_pkkyF3"
           ]
         }
@@ -985,28 +1005,13 @@
       "name": "t:names.media_with_text",
       "settings": {
         "media_position": "left",
-        "media_width": "wide",
-        "media_height": "50svh",
+        "media_width": "medium",
+        "media_height": "60svh",
         "section_width": "page-width",
         "extend_media": true,
         "background_color": "{{ settings.color_palette.color1 }}",
         "padding-block-start": 0,
         "padding-block-end": 0
-      }
-    },
-    "divider_DTWTmh": {
-      "type": "divider",
-      "name": "t:names.divider_section",
-      "settings": {
-        "background_color": "",
-        "divider_color": "",
-        "section_width": "full-width",
-        "thickness": 1,
-        "corner_radius": "square",
-        "width_percent": 100,
-        "alignment_horizontal": "center",
-        "padding-block-start": 16,
-        "padding-block-end": 16
       }
     },
     "section_eeFGpP": {
@@ -1365,6 +1370,7 @@
                   "type": "image",
                   "name": "t:names.image",
                   "settings": {
+                    "image": "shopify://shop_images/foam_soap_starterset.png",
                     "link": "",
                     "image_ratio": "adapt",
                     "width": "fill",
@@ -1476,6 +1482,7 @@
                   "type": "image",
                   "name": "t:names.image",
                   "settings": {
+                    "image": "shopify://shop_images/foam_soap_bundle.png",
                     "link": "",
                     "image_ratio": "adapt",
                     "width": "fill",
@@ -1587,6 +1594,7 @@
                   "type": "image",
                   "name": "t:names.image",
                   "settings": {
+                    "image": "shopify://shop_images/Spender_Ablagen_Kollektion.png",
                     "link": "",
                     "image_ratio": "adapt",
                     "width": "fill",
@@ -1698,6 +1706,7 @@
                   "type": "image",
                   "name": "t:names.image",
                   "settings": {
+                    "image": "shopify://shop_images/kollektionsbild_bundle.png",
                     "link": "",
                     "image_ratio": "adapt",
                     "width": "fill",
@@ -2212,7 +2221,6 @@
     "media_with_content_E7M3aJ",
     "product_list_YridHE",
     "media_with_content_4crjp3",
-    "divider_DTWTmh",
     "section_eeFGpP",
     "carousel_kXqEgM",
     "carousel_PyPMDa"
