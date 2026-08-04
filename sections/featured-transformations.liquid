@@ -2,20 +2,24 @@
   assign slide_count = section.blocks.size
 %}
 
-<div class="featured-transformations section section--{{ section.settings.section_width }} spacing-style" style="--ft-bg: {{ section.settings.background_color }}; --ft-card: {{ section.settings.card_background }}; --ft-text: {{ section.settings.text_color }}; --ft-radius: {{ section.settings.corner_radius }}px; {% render 'spacing-style', settings: section.settings %}">
+<div class="section-background" style="background-color: {{ section.settings.background_color }};"></div>
+<div class="featured-transformations section section--{{ section.settings.section_width }} spacing-style" style="--ft-card: {{ section.settings.card_background }}; --ft-text: {{ section.settings.text_color }}; --ft-radius: {{ section.settings.corner_radius }}px; --ft-media-height: {{ section.settings.media_height }}px; background-color: {{ section.settings.background_color }}; {% render 'spacing-style', settings: section.settings %}">
   <div class="featured-transformations__layout">
-    <div class="featured-transformations__intro">
-      {% if section.settings.eyebrow != blank %}<p class="featured-transformations__eyebrow">{{ section.settings.eyebrow }}</p>{% endif %}
-      <div class="featured-transformations__copy">
-        {% if section.settings.heading != blank %}<h2>{{ section.settings.heading }}</h2>{% endif %}
-        {% if section.settings.text != blank %}<div class="rte">{{ section.settings.text }}</div>{% endif %}
-        {% if slide_count > 0 %}
-          {% capture controls %}{% render 'slideshow-controls', style: 'counter', item_count: slide_count, show_arrows: true, pagination_position: 'left', icon_style: 'arrow', shape: 'circle', class: 'featured-transformations__controls' %}{% endcapture %}
-        {% endif %}
-      </div>
-    </div>
-
     {% if slide_count > 0 %}
+      {% capture slider_header %}
+        <div class="featured-transformations__intro">
+          <div class="featured-transformations__copy">
+            {% if section.settings.heading != blank %}<h2>{{ section.settings.heading }}</h2>{% endif %}
+            {% if section.settings.text != blank %}<div class="rte">{{ section.settings.text }}</div>{% endif %}
+            {% if slide_count > 1 %}
+              <div class="featured-transformations__navigation">
+                {% render 'slideshow-arrow', action: 'previous', icon_style: 'arrow', icon_shape: 'circle' %}
+                {% render 'slideshow-arrow', action: 'next', icon_style: 'arrow', icon_shape: 'circle' %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endcapture %}
       {% capture slides %}
         {% for block in section.blocks %}
           {% liquid
@@ -23,25 +27,45 @@
             assign product_image = block.settings.product_image | default: chosen_product.featured_image
             assign product_title = block.settings.product_title | default: chosen_product.title
             assign product_link = block.settings.link | default: chosen_product.url
+            assign primary_focal_point = block.settings.before_image.presentation.focal_point | default: 'center center'
+            assign tertiary_focal_point = block.settings.third_image.presentation.focal_point | default: 'center center'
+            assign product_focal_point = product_image.presentation.focal_point | default: 'center center'
           %}
           {% capture slide_content %}
             <div class="featured-transformations__slide" {{ block.shopify_attributes }}>
-              <div class="featured-transformations__image featured-transformations__image--before">
-                {% if block.settings.before_image != blank %}{{ block.settings.before_image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '320, 480, 640, 800, 1000', sizes: '(min-width: 990px) 18vw, 50vw', alt: block.settings.before_label }}{% else %}{{ 'image' | placeholder_svg_tag }}{% endif %}
-                {% if block.settings.before_label != blank %}<span>{{ block.settings.before_label | escape }}</span>{% endif %}
-              </div>
-              <div class="featured-transformations__image featured-transformations__image--after">
-                {% if block.settings.after_image != blank %}{{ block.settings.after_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 600, 800, 1000, 1200', sizes: '(min-width: 990px) 24vw, 50vw', alt: block.settings.after_label }}{% else %}{{ 'image' | placeholder_svg_tag }}{% endif %}
-                {% if block.settings.after_label != blank %}<span>{{ block.settings.after_label | escape }}</span>{% endif %}
-              </div>
-              <div class="featured-transformations__product">
-                {% if product_link != blank %}<a href="{{ product_link }}" class="featured-transformations__product-media">{% else %}<div class="featured-transformations__product-media">{% endif %}
-                  {% if product_image != blank %}{{ product_image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '(min-width: 990px) 18vw, 45vw', alt: product_title }}{% else %}{{ 'product-1' | placeholder_svg_tag }}{% endif %}
-                {% if product_link != blank %}</a>{% else %}</div>{% endif %}
-                <div class="featured-transformations__product-copy">
-                  {% if product_title != blank %}<h3>{{ product_title | escape }}</h3>{% endif %}
-                  {% if block.settings.show_price and chosen_product != blank %}<p>{{ chosen_product.price | money }}</p>{% endif %}
-                  {% if product_link != blank %}<a class="button button-secondary" href="{{ product_link }}">{{ block.settings.button_label | escape }}</a>{% endif %}
+              <div class="featured-transformations__visual-grid">
+                <div class="featured-transformations__image featured-transformations__image--primary" style="--ft-image-fit: {{ block.settings.design_image_fit }}; --ft-image-position: {{ primary_focal_point }};">
+                  {% if block.settings.before_link != blank %}<a class="featured-transformations__image-link" href="{{ block.settings.before_link }}">{% endif %}
+                  {% if block.settings.before_image != blank %}
+                    <picture>
+                      {% if block.settings.mobile_image != blank %}<source media="(max-width: 989px)" srcset="{{ block.settings.mobile_image | image_url: width: 1400 }}">{% endif %}
+                      {{ block.settings.before_image | image_url: width: 2400 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600, 2000, 2400', sizes: '(min-width: 990px) 55vw, 100vw', alt: block.settings.before_label }}
+                    </picture>
+                  {% else %}
+                    {{ 'lifestyle-1' | placeholder_svg_tag }}
+                  {% endif %}
+                  {% if block.settings.before_link != blank %}</a>{% endif %}
+                  {% if block.settings.before_label != blank %}<span>{{ block.settings.before_label | escape }}</span>{% endif %}
+                </div>
+                <div class="featured-transformations__image featured-transformations__image--tertiary" style="--ft-image-fit: {{ block.settings.design_image_fit }}; --ft-image-position: {{ tertiary_focal_point }};">
+                  {% if block.settings.third_link != blank %}<a class="featured-transformations__image-link" href="{{ block.settings.third_link }}">{% endif %}
+                  {% if block.settings.third_image != blank %}
+                    {{ block.settings.third_image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 22vw, 100vw', alt: block.settings.third_label }}
+                  {% else %}
+                    {{ 'lifestyle-2' | placeholder_svg_tag }}
+                  {% endif %}
+                  {% if block.settings.third_link != blank %}</a>{% endif %}
+                  {% if block.settings.third_label != blank %}<span>{{ block.settings.third_label | escape }}</span>{% endif %}
+                </div>
+                <div class="featured-transformations__product">
+                  {% if product_link != blank %}<a href="{{ product_link }}" class="featured-transformations__product-media" style="--ft-product-fit: {{ block.settings.product_image_fit }}; --ft-image-position: {{ product_focal_point }};">{% else %}<div class="featured-transformations__product-media" style="--ft-product-fit: {{ block.settings.product_image_fit }}; --ft-image-position: {{ product_focal_point }};">{% endif %}
+                    {% if product_image != blank %}{{ product_image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '(min-width: 990px) 18vw, 45vw', alt: product_title }}{% else %}{{ 'product-1' | placeholder_svg_tag }}{% endif %}
+                  {% if product_link != blank %}</a>{% else %}</div>{% endif %}
+                  <div class="featured-transformations__product-copy">
+                    {% if product_title != blank %}<h3>{{ product_title | escape }}</h3>{% endif %}
+                    {% if block.settings.show_price and chosen_product != blank %}<p>{{ chosen_product.price | money }}</p>{% endif %}
+                    {% if product_link != blank %}<a class="button button-secondary" href="{{ product_link }}">{{ block.settings.button_label | escape }}</a>{% endif %}
+                  </div>
                 </div>
               </div>
             </div>
@@ -49,46 +73,58 @@
           {% render 'slideshow-slide', index: forloop.index0, children: slide_content, slide_id: block.id %}
         {% endfor %}
       {% endcapture %}
-      {% render 'slideshow', slides: slides, slide_count: slide_count, controls: controls, class: 'featured-transformations__slider', infinite: true %}
+      {% render 'slideshow', slides: slides, slide_count: slide_count, header: slider_header, class: 'featured-transformations__slider', infinite: true %}
     {% else %}
-      <div class="featured-transformations__empty">Im Theme-Editor einen Transformations-Block hinzufügen.</div>
+      <div class="featured-transformations__intro">
+        <div class="featured-transformations__copy">
+          {% if section.settings.heading != blank %}<h2>{{ section.settings.heading }}</h2>{% endif %}
+          {% if section.settings.text != blank %}<div class="rte">{{ section.settings.text }}</div>{% endif %}
+        </div>
+      </div>
+      <div class="featured-transformations__empty">Im Theme-Editor einen Design-Block hinzufügen.</div>
     {% endif %}
   </div>
 </div>
 
 {% stylesheet %}
-  .featured-transformations { color: var(--ft-text); background: var(--ft-bg); }
-  .featured-transformations__layout { display: grid; grid-template-columns: minmax(240px,.7fr) minmax(0,1.3fr); gap: clamp(32px,5vw,80px); align-items: center; }
-  .featured-transformations__intro { display: grid; grid-template-columns: auto 1fr; gap: clamp(20px,3vw,52px); }
-  .featured-transformations__eyebrow { margin: 0; font: var(--font-h2--font); font-size: clamp(2rem,4vw,4rem); letter-spacing: .08em; writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase; }
+  .featured-transformations { color: var(--ft-text); }
+  .featured-transformations__layout { display: block; }
+  .featured-transformations__intro { display: block; grid-area: intro; min-width: 0; }
   .featured-transformations__copy { align-self: center; }
   .featured-transformations__copy h2 { margin: 0 0 18px; font-size: clamp(2rem,3.2vw,4rem); line-height: 1; }
   .featured-transformations__copy .rte { margin-bottom: 24px; max-width: 48ch; }
-  .featured-transformations__slider { min-width: 0; }
+  .featured-transformations__slider { min-width: 0; display: grid; grid-template-columns: minmax(220px,.55fr) minmax(0,1.45fr); grid-template-areas: 'intro media'; gap: clamp(32px,5vw,80px); align-items: center; background: transparent; }
+  .featured-transformations__slider slideshow-container { grid-area: media; min-width: 0; }
+  .featured-transformations__slider slideshow-container,
+  .featured-transformations__slider slideshow-slides,
+  .featured-transformations__slider slideshow-slide { background: transparent; }
   .featured-transformations__slider slideshow-slide { width: 100%; }
-  .featured-transformations__slide { display: grid; grid-template-columns: .85fr 1.1fr .85fr; gap: clamp(8px,1.5vw,24px); align-items: center; min-height: 520px; }
+  .featured-transformations__slide { width: 100%; }
+  .featured-transformations__visual-grid { display: grid; grid-template-columns: repeat(8,minmax(0,1fr)); grid-template-rows: .83fr 1fr; gap: clamp(10px,1.2vw,18px); width: 100%; height: var(--ft-media-height,600px); background: transparent; }
   .featured-transformations__image,.featured-transformations__product { position: relative; overflow: hidden; border-radius: var(--ft-radius); }
-  .featured-transformations__image { height: 72%; }
-  .featured-transformations__image--after { height: 100%; }
-  .featured-transformations__image img,.featured-transformations__image svg,.featured-transformations__product-media img,.featured-transformations__product-media svg { width: 100%; height: 100%; display: block; object-fit: cover; }
+  .featured-transformations__image--primary { grid-column: 1/9; grid-row: 1; }
+  .featured-transformations__image--tertiary { grid-column: 1/4; grid-row: 2; }
+  .featured-transformations__image-link,.featured-transformations__image picture { display: block; width: 100%; height: 100%; }
+  .featured-transformations__image img,.featured-transformations__image svg { width: 100%; height: 100%; display: block; object-fit: var(--ft-image-fit,cover); object-position: var(--ft-image-position,center); }
+  .featured-transformations__product-media img,.featured-transformations__product-media svg { width: 100%; height: 100%; display: block; object-fit: var(--ft-product-fit,contain); object-position: var(--ft-image-position,center); }
   .featured-transformations__image span { position: absolute; left: 12px; bottom: 12px; padding: 5px 10px; border-radius: 999px; background: var(--ft-card); font-size: 12px; text-transform: uppercase; }
-  .featured-transformations__product { height: 72%; display: flex; flex-direction: column; background: var(--ft-card); }
+  .featured-transformations__product { grid-column: 4/9; grid-row: 2; min-width: 0; display: flex; flex-direction: row; background: var(--ft-card); }
   .featured-transformations__product-media { display: block; flex: 1; min-height: 0; }
-  .featured-transformations__product-copy { padding: 18px; text-align: center; }
+  .featured-transformations__product-copy { width: 52%; padding: 18px; display: flex; flex-direction: column; justify-content: center; text-align: center; }
   .featured-transformations__product-copy h3 { margin: 0 0 12px; font-size: 1.6rem; }
   .featured-transformations__product-copy p { margin: -6px 0 12px; }
   .featured-transformations__product-copy .button { width: 100%; }
-  .featured-transformations__controls { margin-top: 14px; justify-content: flex-start; }
+  .featured-transformations__navigation { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-start; }
   .featured-transformations__empty { padding: 50px; border: 1px dashed currentColor; border-radius: var(--ft-radius); text-align: center; }
   @media screen and (max-width:989px) {
-    .featured-transformations__layout { grid-template-columns: 1fr; }
+    .featured-transformations__slider { grid-template-columns: 1fr; grid-template-areas: 'intro' 'media'; gap: 32px; }
     .featured-transformations__intro { display: block; text-align: center; }
-    .featured-transformations__eyebrow { writing-mode: initial; transform: none; font-size: clamp(2rem,10vw,3.5rem); margin-bottom: 18px; }
     .featured-transformations__copy .rte { margin-inline: auto; }
-    .featured-transformations__controls { justify-content: center; }
-    .featured-transformations__slide { min-height: 0; grid-template-columns: 1fr 1fr; align-items: stretch; }
-    .featured-transformations__image { height: clamp(260px,65vw,480px); }
-    .featured-transformations__product { grid-column: 1/-1; height: auto; min-height: 230px; flex-direction: row; }
+    .featured-transformations__navigation { justify-content: center; }
+    .featured-transformations__visual-grid { display: grid; grid-template-columns: 1fr; grid-template-rows: auto auto; gap: 14px; min-height: 0; height: auto; aspect-ratio: auto; }
+    .featured-transformations__image--primary { grid-column: 1; grid-row: 1; width: 100%; aspect-ratio: 2.3/1; }
+    .featured-transformations__image--tertiary { display: none; }
+    .featured-transformations__product { grid-column: 1; grid-row: 2; min-height: 0; aspect-ratio: 1.9/1; flex-direction: row; }
     .featured-transformations__product-media,.featured-transformations__product-copy { width: 50%; }
     .featured-transformations__product-copy { display: flex; flex-direction: column; justify-content: center; }
   }
@@ -102,27 +138,32 @@
   "disabled_on": { "groups": ["header", "footer"] },
   "max_blocks": 8,
   "settings": [
-    { "type": "inline_richtext", "id": "eyebrow", "label": "Seitentitel", "default": "FEATURED" },
-    { "type": "inline_richtext", "id": "heading", "label": "Überschrift", "default": "Ergebnisse, die man sieht" },
-    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Zeige Anwendung, Ergebnis und das passende Produkt in einem Slide.</p>" },
+    { "type": "inline_richtext", "id": "heading", "label": "Überschrift", "default": "Designs zum Verlieben" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Entdecke unsere verschiedenen Designs und finde direkt das passende Produkt.</p>" },
     { "type": "select", "id": "section_width", "label": "Breite", "options": [{ "value": "page-width", "label": "Seitenbreite" }, { "value": "full-width", "label": "Volle Breite" }], "default": "full-width" },
     { "type": "color", "id": "background_color", "label": "Hintergrund", "default": "#E9A8F4" },
     { "type": "color", "id": "card_background", "label": "Kartenhintergrund", "default": "#FFFFFF" },
     { "type": "color", "id": "text_color", "label": "Textfarbe", "default": "#111111" },
     { "type": "range", "id": "corner_radius", "label": "Eckenradius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 24 },
+    { "type": "range", "id": "media_height", "label": "Höhe des Bildbereichs (Desktop)", "min": 480, "max": 800, "step": 20, "unit": "px", "default": 620 },
     { "type": "header", "content": "Abstände" },
     { "type": "range", "id": "padding-block-start", "label": "Oben", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
     { "type": "range", "id": "padding-block-end", "label": "Unten", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 }
   ],
   "blocks": [{
-    "type": "transformation", "name": "Transformation",
+    "type": "transformation", "name": "Design",
     "settings": [
-      { "type": "image_picker", "id": "before_image", "label": "Vorher-Bild" },
-      { "type": "text", "id": "before_label", "label": "Vorher-Label", "default": "Vorher" },
-      { "type": "image_picker", "id": "after_image", "label": "Nachher-Bild" },
-      { "type": "text", "id": "after_label", "label": "Nachher-Label", "default": "Nachher" },
+      { "type": "image_picker", "id": "before_image", "label": "Panorama-Designbild" },
+      { "type": "image_picker", "id": "mobile_image", "label": "Panoramabild für Mobilgeräte" },
+      { "type": "text", "id": "before_label", "label": "Label Panoramabild", "default": "Design" },
+      { "type": "url", "id": "before_link", "label": "Link Panoramabild" },
+      { "type": "image_picker", "id": "third_image", "label": "Designbild unten" },
+      { "type": "text", "id": "third_label", "label": "Label unteres Bild" },
+      { "type": "url", "id": "third_link", "label": "Link unteres Bild" },
+      { "type": "select", "id": "design_image_fit", "label": "Designbilder einpassen", "options": [{ "value": "cover", "label": "Ausfüllen" }, { "value": "contain", "label": "Einpassen" }], "default": "cover" },
       { "type": "product", "id": "product", "label": "Produkt" },
       { "type": "image_picker", "id": "product_image", "label": "Alternatives Produktbild" },
+      { "type": "select", "id": "product_image_fit", "label": "Produktbild einpassen", "options": [{ "value": "contain", "label": "Einpassen" }, { "value": "cover", "label": "Ausfüllen" }], "default": "contain" },
       { "type": "text", "id": "product_title", "label": "Alternativer Produkttitel" },
       { "type": "url", "id": "link", "label": "Alternativer Link" },
       { "type": "checkbox", "id": "show_price", "label": "Preis anzeigen", "default": true },

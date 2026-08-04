@@ -2213,6 +2213,79 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "featured_transformations_FQGEbp": {
+      "type": "featured-transformations",
+      "blocks": {
+        "transformation_BnEnr4": {
+          "type": "transformation",
+          "settings": {
+            "before_image": "shopify://shop_images/Starterset_content_2872363d-6ab7-4b65-a24c-fd4577f205f6.png",
+            "before_label": "",
+            "before_link": "",
+            "third_image": "shopify://shop_images/ChatGPT_Image_24._Juli_2026_09_42_10_4.png",
+            "third_label": "CREME ROSE",
+            "third_link": "",
+            "design_image_fit": "cover",
+            "product": "hey-soap-komplettset",
+            "product_image_fit": "cover",
+            "product_title": "",
+            "link": "",
+            "show_price": true,
+            "button_label": "Produkt ansehen"
+          }
+        },
+        "transformation_EGgaTw": {
+          "type": "transformation",
+          "settings": {
+            "before_label": "Design",
+            "before_link": "",
+            "third_label": "",
+            "third_link": "",
+            "design_image_fit": "cover",
+            "product": "",
+            "product_image_fit": "contain",
+            "product_title": "",
+            "link": "",
+            "show_price": true,
+            "button_label": "Produkt ansehen"
+          }
+        },
+        "transformation_NVV3hq": {
+          "type": "transformation",
+          "settings": {
+            "before_label": "Design",
+            "before_link": "",
+            "third_label": "",
+            "third_link": "",
+            "design_image_fit": "cover",
+            "product": "",
+            "product_image_fit": "contain",
+            "product_title": "",
+            "link": "",
+            "show_price": true,
+            "button_label": "Produkt ansehen"
+          }
+        }
+      },
+      "block_order": [
+        "transformation_BnEnr4",
+        "transformation_EGgaTw",
+        "transformation_NVV3hq"
+      ],
+      "name": "Featured Transformations",
+      "settings": {
+        "eyebrow": "STARTERSETS",
+        "heading": "Designs zum Verlieben",
+        "text": "<p>Entdecke unsere verschiedenen Designs und finde direkt das passende Produkt.<br/>Das Starterset enthält alles was du für deine heysoap Ausstattung in der Küche bentötigt.</p>",
+        "section_width": "page-width",
+        "background_color": "#FFFFFF",
+        "card_background": "#ffffff",
+        "text_color": "#111111",
+        "corner_radius": 20,
+        "padding-block-start": 20,
+        "padding-block-end": 20
+      }
     }
   },
   "order": [
@@ -2223,6 +2296,7 @@
     "product_list_YridHE",
     "section_eeFGpP",
     "carousel_kXqEgM",
-    "carousel_PyPMDa"
+    "carousel_PyPMDa",
+    "featured_transformations_FQGEbp"
   ]
 }
